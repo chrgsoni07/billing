@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RK Jewellers | Gold & Silver Billing System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #d4af37;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h2 {
+            color: #222;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 0.5rem;
+        }
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+            font-size: 1rem;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.2s;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+        input:focus, select:focus {
+            border-color: #d4af37;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        button {
+            background-color: #d4af37;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #c19b2e;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .flex-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .flex-row > * {
+            flex: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        td input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        td input:focus {
+            border-color: #d4af37;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1);
+        }
+        td input[readonly] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+        .gold-section {
+            border-left: 4px solid #d4af37;
+        }
+        .silver-section {
+            border-left: 4px solid #c0c0c0;
+        }
+        .exchange-section {
+            border-left: 4px solid #ffa500;
+        }
+        .total-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #fff9e6;
+            border-radius: 8px;
+            border: 1px solid #ffe8b3;
+            text-align: right;
+        }
+        .total-section p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        .total-section h3 {
+            color: #d4af37;
+            font-size: 1.8rem;
+            margin: 1rem 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 1000px;
+            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 1rem;
+        }
+        .modal-title {
+            color: #d4af37;
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        .bill-preview {
+            background: white;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .bill-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 1rem;
+        }
+        .bill-header h2 {
+            color: #d4af37;
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .bill-header p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+        .bill-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        .bill-details div {
+            flex: 1;
+        }
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .bill-table th {
+            background-color: #f8f9fa;
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 2px solid #d4af37;
+        }
+        .bill-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .gold-header {
+            color: #d4af37;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .silver-header {
+            color: #c0c0c0;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.5rem;
+        }
+        .bill-summary {
+            text-align: right;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid #d4af37;
+        }
+        .bill-summary p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        .bill-summary h3 {
+            color: #d4af37;
+            font-size: 1.5rem;
+            margin-top: 1rem;
+        }
+        .modal-footer {
+            text-align: right;
+            border-top: 1px solid #ddd;
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .flex-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            .total-section h3 {
+                font-size: 1.5rem;
+            }
+            .modal-content {
+                margin: 1rem auto;
+                padding: 1rem;
+                width: 95%;
+            }
+            .bill-details {
+                flex-direction: column;
+            }
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            .panel {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RK Jewellers Billing System</h1>
+
+        <!-- Page 1: Customer Details -->
+        <div class="panel" id="page1">
+            <h2>Customer & Bill Details</h2>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="customer-name">Customer Name *</label>
+                    <input type="text" id="customer-name" placeholder="Enter customer name">
+                </div>
+                <div class="input-group">
+                    <label for="mobile">Mobile Number *</label>
+                    <input type="text" id="mobile" placeholder="Enter mobile number">
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="Enter location">
+                </div>
+                <div class="input-group">
+                    <label for="bill-date">Bill Date</label>
+                    <input type="date" id="bill-date" value="">
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="gold-karat">Gold Rate Format</label>
+                    <select id="gold-karat">
+                        <option value="24">24K</option>
+                        <option value="22" selected>22K</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="gold-rate">Gold Rate (Per 10 Grams) *</label>
+                    <input type="number" id="gold-rate" placeholder="Enter gold rate" step="0.01" min="0" inputmode="decimal">
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button id="proceed-btn">Proceed to Billing</button>
+            </div>
+        </div>
+
+        <!-- Page 2: Billing Page (hidden initially) -->
+        <div class="panel" id="page2" style="display: none;">
+            <h2>Create Bill</h2>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="edit-customer-name">Customer Name</label>
+                    <input type="text" id="edit-customer-name">
+                </div>
+                <div class="input-group">
+                    <label for="edit-mobile">Mobile Number</label>
+                    <input type="text" id="edit-mobile">
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="edit-location">Location</label>
+                    <input type="text" id="edit-location">
+                </div>
+                <div class="input-group">
+                    <label for="edit-bill-date">Bill Date</label>
+                    <input type="date" id="edit-bill-date">
+                </div>
+            </div>
+            <div class="flex-row">
+                <div class="input-group">
+                    <label for="edit-gold-karat">Gold Rate Format</label>
+                    <select id="edit-gold-karat">
+                        <option value="24">24K</option>
+                        <option value="22" selected>22K</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="edit-gold-rate">Gold Rate (Per 10 Grams)</label>
+                    <input type="number" id="edit-gold-rate" step="0.01" min="0" inputmode="decimal">
+                </div>
+            </div>
+
+            <!-- New Gold Products Section -->
+            <div class="panel gold-section" style="margin-top: 2rem;">
+                <h2>New Gold Products</h2>
+                <table id="gold-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Gross Wt (g)</th>
+                            <th>Less (g)</th>
+                            <th>Net Wt (g)</th>
+                            <th>Rate/Gram</th>
+                            <th>Making (%)</th>
+                            <th>Extra (₹)</th>
+                            <th>Total (₹)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gold-items"></tbody>
+                </table>
+                <div style="margin-top: 1rem;">
+                    <button id="add-gold-btn" class="btn-secondary">Add Gold Item</button>
+                </div>
+            </div>
+
+            <!-- New Silver Products Section -->
+            <div class="panel silver-section" style="margin-top: 2rem;">
+                <h2>New Silver Products</h2>
+                <table id="silver-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Weight (g)</th>
+                            <th>Rate/Gram (₹)</th>
+                            <th>Extra (₹)</th>
+                            <th>Total (₹)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="silver-items"></tbody>
+                </table>
+                <div style="margin-top: 1rem;">
+                    <button id="add-silver-btn" class="btn-secondary">Add Silver Item</button>
+                </div>
+            </div>
+
+            <!-- Exchange Items Section -->
+            <div class="panel exchange-section" style="margin-top: 2rem;">
+                <h2>Exchange Items (Old Items)</h2>
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: #d4af37; font-size: 1.2rem; margin-bottom: 0.5rem;">Gold Exchange</h3>
+                    <table id="gold-exchange-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Weight (g)</th>
+                                <th>Purity (%)</th>
+                                <th>24K Rate (Per 10g)</th>
+                                <th>Total (₹)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gold-exchange-items"></tbody>
+                    </table>
+                    <div style="margin-top: 0.5rem;">
+                        <button id="add-gold-exchange-btn" class="btn-secondary">Add Gold Exchange</button>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #c0c0c0; font-size: 1.2rem; margin-bottom: 0.5rem;">Silver Exchange</h3>
+                    <table id="silver-exchange-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Weight (g)</th>
+                                <th>Rate/Gram (₹)</th>
+                                <th>Total (₹)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="silver-exchange-items"></tbody>
+                    </table>
+                    <div style="margin-top: 0.5rem;">
+                        <button id="add-silver-exchange-btn" class="btn-secondary">Add Silver Exchange</button>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem; text-align: right; padding: 1rem; background: #fff3e6; border-radius: 8px;">
+                    <h4>Total Exchange Value: ₹<span id="exchange-total">0.00</span></h4>
+                </div>
+            </div>
+
+            <!-- Total Section -->
+            <div class="total-section">
+                <p>New Items Total: ₹<span id="new-total">0.00</span></p>
+                <p>Less: Exchange Value: ₹<span id="exchange-display">0.00</span></p>
+                <h3>Adjusted Total: ₹<span id="adjusted-total">0.00</span></h3>
+                <div style="margin-top: 1rem;">
+                    <button id="save-bill-btn" class="btn-success">Save & Print Bill</button>
+                    <button id="back-btn" class="btn-secondary" style="margin-left: 1rem;">Back to Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill Preview Modal -->
+    <div id="bill-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Bill Preview</h2>
+                <button id="close-modal" class="btn btn-secondary">Close</button>
+            </div>
+            <div class="modal-body">
+                <div class="bill-preview" id="bill-preview-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="print-bill-btn" class="btn btn-success">Print Bill</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('bill-date').value = today;
+        document.getElementById('edit-bill-date').value = today;
+
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const proceedBtn = document.getElementById('proceed-btn');
+        const backBtn = document.getElementById('back-btn');
+        const saveBillBtn = document.getElementById('save-bill-btn');
+        const billModal = document.getElementById('bill-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const printBillBtn = document.getElementById('print-bill-btn');
+        const billPreviewContent = document.getElementById('bill-preview-content');
+
+        function get24KRate() {
+            const goldKarat = document.getElementById('edit-gold-karat').value;
+            const goldRate = parseFloat(document.getElementById('edit-gold-rate').value) || 0;
+            return goldKarat === '24' ? goldRate : goldRate * 24 / 22;
+        }
+
+        proceedBtn.addEventListener('click', () => {
+            const customerName = document.getElementById('customer-name').value.trim();
+            const mobile = document.getElementById('mobile').value.trim();
+            const goldRate = document.getElementById('gold-rate').value;
+
+            if (!customerName || !mobile || !goldRate) {
+                alert('Please fill all required fields (Customer Name, Mobile, Gold Rate).');
+                return;
+            }
+
+            document.getElementById('edit-customer-name').value = customerName;
+            document.getElementById('edit-mobile').value = mobile;
+            document.getElementById('edit-location').value = document.getElementById('location').value;
+            document.getElementById('edit-bill-date').value = document.getElementById('bill-date').value;
+            document.getElementById('edit-gold-karat').value = document.getElementById('gold-karat').value;
+            document.getElementById('edit-gold-rate').value = goldRate;
+
+            page1.style.display = 'none';
+            page2.style.display = 'block';
+
+            updateGoldRatePerGram();
+        });
+
+        backBtn.addEventListener('click', () => {
+            page2.style.display = 'none';
+            page1.style.display = 'block';
+        });
+
+        function updateGoldRatePerGram() {
+            const goldRate = parseFloat(document.getElementById('edit-gold-rate').value) || 0;
+            const ratePerGram = goldRate / 10;
+            document.querySelectorAll('#gold-items tr').forEach(row => {
+                const rateInput = row.querySelector('.gold-rate-per-gram');
+                if (rateInput && !rateInput.dataset.edited) {
+                    rateInput.value = ratePerGram.toFixed(2);
+                    calculateGoldRow(row);
+                }
+            });
+            updateNewTotal();
+        }
+
+        document.getElementById('edit-gold-rate').addEventListener('input', updateGoldRatePerGram);
+        document.getElementById('edit-gold-karat').addEventListener('change', updateGoldRatePerGram);
+
+        function addGoldRow() {
+            const row = document.createElement('tr');
+            const ratePerGram = (parseFloat(document.getElementById('edit-gold-rate').value) || 0) / 10;
+            row.innerHTML = `
+                <td><input type="text" class="item-name" placeholder="Item name"></td>
+                <td><input type="number" class="gross-wt" step="0.01" min="0" inputmode="decimal"></td>
+                <td><input type="number" class="less-wt" step="0.01" min="0" inputmode="decimal" value="0"></td>
+                <td><input type="number" class="net-wt" step="0.01" min="0" inputmode="decimal" readonly></td>
+                <td><input type="number" class="gold-rate-per-gram" step="0.01" min="0" inputmode="decimal" value="${ratePerGram.toFixed(2)}"></td>
+                <td><input type="number" class="making-charge" step="0.01" min="0" inputmode="decimal" value="0" placeholder="e.g. 10 (10%)"></td>
+                <td><input type="number" class="extra" step="0.01" min="0" inputmode="decimal" value="0"></td>
+                <td class="row-total" style="font-weight: 600;">₹0.00</td>
+                <td><button class="btn-danger remove-row" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Remove</button></td>
+            `;
+            document.getElementById('gold-items').appendChild(row);
+
+            const grossWtInput = row.querySelector('.gross-wt');
+            const lessWtInput = row.querySelector('.less-wt');
+            const netWtInput = row.querySelector('.net-wt');
+            const rateInput = row.querySelector('.gold-rate-per-gram');
+            const makingInput = row.querySelector('.making-charge');
+            const extraInput = row.querySelector('.extra');
+
+            function calculateNetWt() {
+                const gross = parseFloat(grossWtInput.value) || 0;
+                const less = parseFloat(lessWtInput.value) || 0;
+                netWtInput.value = (gross - less).toFixed(2);
+                calculateGoldRow(row);
+            }
+
+            function calculateGoldRow(row) {
+                const net = parseFloat(netWtInput.value) || 0;
+                const rate = parseFloat(rateInput.value) || 0;
+                const makingPercent = parseFloat(makingInput.value) || 0;
+                const extra = parseFloat(extraInput.value) || 0;
+
+                const goldValue = net * rate;
+                const makingAmount = goldValue * (makingPercent / 100);
+                const total = goldValue + makingAmount + extra;
+
+                row.querySelector('.row-total').textContent = `₹${total.toFixed(2)}`;
+                updateNewTotal();
+            }
+
+            grossWtInput.addEventListener('input', calculateNetWt);
+            lessWtInput.addEventListener('input', calculateNetWt);
+            rateInput.addEventListener('input', () => {
+                rateInput.dataset.edited = true;
+                calculateGoldRow(row);
+            });
+            makingInput.addEventListener('input', () => calculateGoldRow(row));
+            extraInput.addEventListener('input', () => calculateGoldRow(row));
+            row.querySelector('.remove-row').addEventListener('click', () => {
+                row.remove();
+                updateNewTotal();
+            });
+
+            calculateNetWt();
+        }
+        document.getElementById('add-gold-btn').addEventListener('click', addGoldRow);
+
+        function addSilverRow() {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="item-name" placeholder="Item name"></td>
+                <td><input type="number" class="silver-wt" step="0.01" min="0" inputmode="decimal"></td>
+                <td><input type="number" class="silver-rate" step="0.01" min="0" inputmode="decimal"></td>
+                <td><input type="number" class="silver-extra" step="0.01" min="0" inputmode="decimal" value="0"></td>
+                <td class="row-total" style="font-weight: 600;">₹0.00</td>
+                <td><button class="btn-danger remove-row" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Remove</button></td>
+            `;
+            document.getElementById('silver-items').appendChild(row);
+
+            const wtInput = row.querySelector('.silver-wt');
+            const rateInput = row.querySelector('.silver-rate');
+            const extraInput = row.querySelector('.silver-extra');
+
+            function calculateSilverRow() {
+                const wt = parseFloat(wtInput.value) || 0;
+                const rate = parseFloat(rateInput.value) || 0;
+                const extra = parseFloat(extraInput.value) || 0;
+                const total = (wt * rate) + extra;
+                row.querySelector('.row-total').textContent = `₹${total.toFixed(2)}`;
+                updateNewTotal();
+            }
+
+            wtInput.addEventListener('input', calculateSilverRow);
+            rateInput.addEventListener('input', calculateSilverRow);
+            extraInput.addEventListener('input', calculateSilverRow);
+            row.querySelector('.remove-row').addEventListener('click', () => {
+                row.remove();
+                updateNewTotal();
+            });
+        }
+        document.getElementById('add-silver-btn').addEventListener('click', addSilverRow);
+
+        function addGoldExchangeRow() {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="exchange-item-name" placeholder="Item name"></td>
+                <td><input type="number" class="exchange-gold-wt" step="0.01" min="0" inputmode="decimal"></td>
+                <td><input type="number" class="exchange-gold-purity" step="0.01" min="0" max="100" inputmode="decimal" placeholder="e.g. 91.67 for 22K"></td>
+                <td><input type="number" class="exchange-gold-24k-rate" step="0.01" min="0" inputmode="decimal" placeholder="Enter 24K rate per 10g"></td>
+                <td class="exchange-row-total" style="font-weight: 600;">₹0.00</td>
+                <td><button class="btn-danger remove-exchange-row" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Remove</button></td>
+            `;
+            document.getElementById('gold-exchange-items').appendChild(row);
+
+            const wtInput = row.querySelector('.exchange-gold-wt');
+            const purityInput = row.querySelector('.exchange-gold-purity');
+            const rateInput = row.querySelector('.exchange-gold-24k-rate');
+
+            function calculateGoldExchangeRow() {
+                const wt = parseFloat(wtInput.value) || 0;
+                const purity = parseFloat(purityInput.value) || 0;
+                const rate = parseFloat(rateInput.value) || 0;
+                const total = wt * (purity / 100) * (rate / 10);
+                row.querySelector('.exchange-row-total').textContent = `₹${total.toFixed(2)}`;
+                updateExchangeTotal();
+            }
+
+            wtInput.addEventListener('input', calculateGoldExchangeRow);
+            purityInput.addEventListener('input', calculateGoldExchangeRow);
+            rateInput.addEventListener('input', calculateGoldExchangeRow);
+            row.querySelector('.remove-exchange-row').addEventListener('click', () => {
+                row.remove();
+                updateExchangeTotal();
+            });
+        }
+        document.getElementById('add-gold-exchange-btn').addEventListener('click', addGoldExchangeRow);
+
+        function addSilverExchangeRow() {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" class="exchange-item-name" placeholder="Item name"></td>
+                <td><input type="number" class="exchange-silver-wt" step="0.01" min="0" inputmode="decimal"></td>
+                <td><input type="number" class="exchange-silver-rate" step="0.01" min="0" inputmode="decimal"></td>
+                <td class="exchange-row-total" style="font-weight: 600;">₹0.00</td>
+                <td><button class="btn-danger remove-exchange-row" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Remove</button></td>
+            `;
+            document.getElementById('silver-exchange-items').appendChild(row);
+
+            const wtInput = row.querySelector('.exchange-silver-wt');
+            const rateInput = row.querySelector('.exchange-silver-rate');
+
+            function calculateSilverExchangeRow() {
+                const wt = parseFloat(wtInput.value) || 0;
+                const rate = parseFloat(rateInput.value) || 0;
+                const total = wt * rate;
+                row.querySelector('.exchange-row-total').textContent = `₹${total.toFixed(2)}`;
+                updateExchangeTotal();
+            }
+
+            wtInput.addEventListener('input', calculateSilverExchangeRow);
+            rateInput.addEventListener('input', calculateSilverExchangeRow);
+            row.querySelector('.remove-exchange-row').addEventListener('click', () => {
+                row.remove();
+                updateExchangeTotal();
+            });
+        }
+        document.getElementById('add-silver-exchange-btn').addEventListener('click', addSilverExchangeRow);
+
+        function updateNewTotal() {
+            let newTotal = 0;
+            document.querySelectorAll('#gold-items .row-total').forEach(cell => {
+                newTotal += parseFloat(cell.textContent.replace('₹', '')) || 0;
+            });
+            document.querySelectorAll('#silver-items .row-total').forEach(cell => {
+                newTotal += parseFloat(cell.textContent.replace('₹', '')) || 0;
+            });
+            document.getElementById('new-total').textContent = newTotal.toFixed(2);
+            updateAdjustedTotal();
+        }
+
+        function updateExchangeTotal() {
+            let exchangeTotal = 0;
+            document.querySelectorAll('#gold-exchange-items .exchange-row-total').forEach(cell => {
+                exchangeTotal += parseFloat(cell.textContent.replace('₹', '')) || 0;
+            });
+            document.querySelectorAll('#silver-exchange-items .exchange-row-total').forEach(cell => {
+                exchangeTotal += parseFloat(cell.textContent.replace('₹', '')) || 0;
+            });
+            document.getElementById('exchange-total').textContent = exchangeTotal.toFixed(2);
+            document.getElementById('exchange-display').textContent = exchangeTotal.toFixed(2);
+            updateAdjustedTotal();
+        }
+
+        function updateAdjustedTotal() {
+            const newTotal = parseFloat(document.getElementById('new-total').textContent) || 0;
+            const exchangeTotal = parseFloat(document.getElementById('exchange-total').textContent) || 0;
+            document.getElementById('adjusted-total').textContent = (newTotal - exchangeTotal).toFixed(2);
+        }
+
+        function generateBillContent(discount = 0) {
+            const customerName = document.getElementById('edit-customer-name').value;
+            const mobile = document.getElementById('edit-mobile').value;
+            const location = document.getElementById('edit-location').value;
+            const billDate = document.getElementById('edit-bill-date').value;
+            const goldKarat = document.getElementById('edit-gold-karat').value;
+            const goldRate = document.getElementById('edit-gold-rate').value;
+            const adjustedTotal = parseFloat(document.getElementById('adjusted-total').textContent) || 0;
+            const newTotal = parseFloat(document.getElementById('new-total').textContent) || 0;
+            const exchangeTotal = parseFloat(document.getElementById('exchange-total').textContent) || 0;
+            const finalTotal = adjustedTotal - discount;
+            const billNo = Math.floor(Math.random() * 10000);
+
+            let billHTML = `
+                <div class="bill-header">
+                    <h2>RK Jewellers</h2>
+                    <p>Chirag Soni | Mobile: 9926692091</p>
+                    <p>Sarafa Bazar Jawad</p>
+                    <p>Date: ${billDate} | Bill No: ${billNo}</p>
+                </div>
+                <div class="bill-details">
+                    <div>
+                        <p><strong>Customer:</strong> ${customerName}</p>
+                        <p><strong>Mobile:</strong> ${mobile}</p>
+                        <p><strong>Location:</strong> ${location}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p><strong>Gold Rate:</strong> ₹${goldRate} per 10g (${goldKarat}K)</p>
+                    </div>
+                </div>
+            `;
+
+            if (document.querySelectorAll('#gold-items tr').length > 0) {
+                billHTML += `
+                    <h3 class="gold-header">New Gold Items</h3>
+                    <table class="bill-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Gross Wt</th>
+                                <th>Less</th>
+                                <th>Net Wt</th>
+                                <th>Rate/Gram</th>
+                                <th>Making (%)</th>
+                                <th>Extra</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                document.querySelectorAll('#gold-items tr').forEach(row => {
+                    billHTML += `
+                        <tr>
+                            <td>${row.querySelector('.item-name')?.value || ''}</td>
+                            <td>${row.querySelector('.gross-wt')?.value || 0}g</td>
+                            <td>${row.querySelector('.less-wt')?.value || 0}g</td>
+                            <td>${row.querySelector('.net-wt')?.value || 0}g</td>
+                            <td>₹${row.querySelector('.gold-rate-per-gram')?.value || 0}</td>
+                            <td>${row.querySelector('.making-charge')?.value || 0}%</td>
+                            <td>₹${row.querySelector('.extra')?.value || 0}</td>
+                            <td>${row.querySelector('.row-total')?.textContent || '₹0.00'}</td>
+                        </tr>
+                    `;
+                });
+                billHTML += `</tbody></table>`;
+            }
+
+            if (document.querySelectorAll('#silver-items tr').length > 0) {
+                billHTML += `
+                    <h3 class="silver-header">New Silver Items</h3>
+                    <table class="bill-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Weight</th>
+                                <th>Rate/Gram</th>
+                                <th>Extra</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                document.querySelectorAll('#silver-items tr').forEach(row => {
+                    billHTML += `
+                        <tr>
+                            <td>${row.querySelector('.item-name')?.value || ''}</td>
+                            <td>${row.querySelector('.silver-wt')?.value || 0}g</td>
+                            <td>₹${row.querySelector('.silver-rate')?.value || 0}</td>
+                            <td>₹${row.querySelector('.silver-extra')?.value || 0}</td>
+                            <td>${row.querySelector('.row-total')?.textContent || '₹0.00'}</td>
+                        </tr>
+                    `;
+                });
+                billHTML += `</tbody></table>`;
+            }
+
+            if (document.querySelectorAll('#gold-exchange-items tr').length > 0) {
+                billHTML += `
+                    <h3 class="gold-header">Gold Exchange Items</h3>
+                    <table class="bill-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Weight</th>
+                                <th>Purity (%)</th>
+                                <th>24K Rate</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                document.querySelectorAll('#gold-exchange-items tr').forEach(row => {
+                    billHTML += `
+                        <tr>
+                            <td>${row.querySelector('.exchange-item-name')?.value || ''}</td>
+                            <td>${row.querySelector('.exchange-gold-wt')?.value || 0}g</td>
+                            <td>${row.querySelector('.exchange-gold-purity')?.value || 0}%</td>
+                            <td>₹${row.querySelector('.exchange-gold-24k-rate')?.value || 0}</td>
+                            <td>${row.querySelector('.exchange-row-total')?.textContent || '₹0.00'}</td>
+                        </tr>
+                    `;
+                });
+                billHTML += `</tbody></table>`;
+            }
+
+            if (document.querySelectorAll('#silver-exchange-items tr').length > 0) {
+                billHTML += `
+                    <h3 class="silver-header">Silver Exchange Items</h3>
+                    <table class="bill-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Weight</th>
+                                <th>Rate/Gram</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                document.querySelectorAll('#silver-exchange-items tr').forEach(row => {
+                    billHTML += `
+                        <tr>
+                            <td>${row.querySelector('.exchange-item-name')?.value || ''}</td>
+                            <td>${row.querySelector('.exchange-silver-wt')?.value || 0}g</td>
+                            <td>₹${row.querySelector('.exchange-silver-rate')?.value || 0}</td>
+                            <td>${row.querySelector('.exchange-row-total')?.textContent || '₹0.00'}</td>
+                        </tr>
+                    `;
+                });
+                billHTML += `</tbody></table>`;
+            }
+
+            billHTML += `
+                <div class="bill-summary">
+                    <p>New Items Total: ₹${newTotal.toFixed(2)}</p>
+                    <p>Less: Exchange Value: ₹${exchangeTotal.toFixed(2)}</p>
+                    <p>Adjusted Total: ₹${adjustedTotal.toFixed(2)}</p>
+                    ${discount > 0 ? `<p>Discount: ₹${discount.toFixed(2)}</p>` : ''}
+                    <h3>Final Total: ₹${finalTotal.toFixed(2)}</h3>
+                </div>
+                <div class="thank-you" style="text-align: center; margin-top: 5px; color: #777; font-size: 0.7rem;">
+                    <p>Thank you for shopping with RK Jewellers!</p>
+                </div>
+            `;
+            return billHTML;
+        }
+
+        saveBillBtn.addEventListener('click', () => {
+            billPreviewContent.innerHTML = generateBillContent(0);
+            billModal.style.display = 'block';
+        });
+
+        printBillBtn.addEventListener('click', () => {
+            const discount = parseFloat(prompt('Enter discount amount (₹):', '0')) || 0;
+            const billHTML = generateBillContent(discount);
+
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.left = '-9999px';
+            iframe.style.top = '-9999px';
+            iframe.style.border = 'none';
+            document.body.appendChild(iframe);
+
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(`
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>RK Jewellers Bill</title>
+                        <style>
+                            * { box-sizing: border-box; margin:0; padding:0; }
+                            body { 
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                                color: #333; 
+                                line-height: 1.2; 
+                                padding: 5px; 
+                                font-size: 12px;
+                            }
+                            @page { 
+                                size: A5 portrait; 
+                                margin: 0.25cm;
+                            }
+                            .bill-header { 
+                                text-align: center; 
+                                margin-bottom: 5px; 
+                                border-bottom: 1px solid #d4af37; 
+                                padding-bottom: 5px; 
+                            }
+                            .bill-header h2 { 
+                                color: #d4af37; 
+                                font-size: 1.2rem; 
+                                margin-bottom: 0.1rem; 
+                            }
+                            .bill-header p { 
+                                font-size: 0.8rem; 
+                                color: #555; 
+                                margin: 1px 0;
+                            }
+                            .bill-details { 
+                                display: flex; 
+                                justify-content: space-between; 
+                                margin-bottom: 5px; 
+                                font-size: 0.8rem;
+                            }
+                            .bill-details div { flex:1; }
+                            .bill-table { 
+                                width: 100%; 
+                                border-collapse: collapse; 
+                                margin-bottom: 5px; 
+                                font-size: 0.65rem; 
+                            }
+                            .bill-table th { 
+                                background-color: #f8f9fa; 
+                                padding: 2px 4px; 
+                                text-align: left; 
+                                border-bottom: 1px solid #d4af37; 
+                            }
+                            .bill-table td { 
+                                padding: 2px 4px; 
+                                border-bottom: 1px solid #ddd; 
+                            }
+                            .gold-header { 
+                                color: #d4af37; 
+                                font-size: 0.9rem; 
+                                margin: 5px 0 2px; 
+                            }
+                            .silver-header { 
+                                color: #c0c0c0; 
+                                font-size: 0.9rem; 
+                                margin: 5px 0 2px; 
+                            }
+                            .bill-summary { 
+                                text-align: right; 
+                                margin-top: 5px; 
+                                padding-top: 5px; 
+                                border-top: 1px solid #d4af37; 
+                            }
+                            .bill-summary p { 
+                                margin: 1px 0; 
+                                font-size: 0.8rem; 
+                            }
+                            .bill-summary h3 { 
+                                color: #d4af37; 
+                                font-size: 1rem; 
+                                margin-top: 2px; 
+                            }
+                            .thank-you {
+                                text-align: center; 
+                                margin-top: 5px; 
+                                color: #777; 
+                                font-size: 0.7rem;
+                            }
+                            .page-break-avoid {
+                                page-break-inside: avoid;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="page-break-avoid">${billHTML}</div>
+                    </body>
+                </html>
+            `);
+            iframeDoc.close();
+
+            iframe.onload = function() {
+                setTimeout(() => {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    setTimeout(() => document.body.removeChild(iframe), 100);
+                }, 500);
+            };
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            billModal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === billModal) billModal.style.display = 'none';
+        });
+
+        updateNewTotal();
+        updateExchangeTotal();
+    </script>
+</body>
+</html>
